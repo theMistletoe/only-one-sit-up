@@ -155,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Text(
                   'Sit-ups: $_sitUpCount',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 20),
                 // Use the shouldShowCongrats function to determine visibility of the "Well done!" text
