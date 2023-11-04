@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (event.y > 9.0 && !_isUserUp) {
               _isUserUp = true;
               _sitUpCount++;
-            } else if (event.y < 1.0 && _isUserUp) {
+            } else if (event.y < 1.0 && event.z < 0.0 && _isUserUp) {
               // This condition checks if the user has returned to the initial position
               _isUserUp = false;
             }
