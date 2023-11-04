@@ -38,7 +38,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<double>? _accelerometerValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   late ConfettiController _confettiController;
 
@@ -64,8 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
         (AccelerometerEvent event) {
           // Use setState to rebuild the UI with new values
           setState(() {
-            _accelerometerValues = <double>[event.x, event.y, event.z];
-
             // Check if the device has been tilted enough to count as a sit-up
             if (event.y > 9.0 && !_isUserUp && !_isInitialPosition) {
               _isUserUp = true;
