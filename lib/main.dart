@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:vibration/vibration.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,6 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
             if (event.y > 9.0 && !_isUserUp) {
               _isUserUp = true;
               _sitUpCount++;
+              // Check if the device can vibrate and provide haptic feedback
+              Vibration.hasVibrator().then((bool? hasVibrator) {
+                if (hasVibrator ?? false) {
+                  Vibration.vibrate(
+                      duration: 10); // Vibrate for 100 milliseconds
+                }
+              });
             } else if (event.y < 1.0 && event.z < 0.0 && _isUserUp) {
               // This condition checks if the user has returned to the initial position
               _isUserUp = false;
