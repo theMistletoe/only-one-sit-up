@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert'; // For json encoding/decoding
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:vibration/vibration.dart';
 import 'package:confetti/confetti.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _sitUpCount = 0;
   bool _isUserUp = false;
   bool _isInitialPosition = true;
+  Map<String, int> _sitUpLog = {}; // Store date and count
 
   bool shouldShowCongrats() {
     return _sitUpCount >= 1;
@@ -52,6 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    // ... Other init code
+    loadSitUpLog();
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 1));
     _streamSubscriptions.add(
@@ -65,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (event.y > 9.0 && !_isUserUp && !_isInitialPosition) {
               _isUserUp = true;
               _sitUpCount++;
+              saveSitUpCount();
               if (_sitUpCount > 0) {
                 _confettiController.play();
               }
@@ -96,6 +102,44 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
       ),
+    );
+  }
+
+  void loadSitUpLog() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _sitUpLog = Map<String, int>.from(
+          json.decode(prefs.getString('sitUpLog') ?? '{}'));
+    });
+  }
+
+  void saveSitUpCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = getTodayDate();
+    setState(() {
+      _sitUpLog[today] = (_sitUpLog[today] ?? 0) + 1; // Increment today's count
+      prefs.setString('sitUpLog', json.encode(_sitUpLog)); // Save it
+    });
+  }
+
+  String getTodayDate() {
+    return DateTime.now()
+        .toIso8601String()
+        .substring(0, 10); // YYYY-MM-DD format
+  }
+
+  // Additional Widget to display the log
+  Widget sitUpLogWidget() {
+    return ListView.builder(
+      shrinkWrap: true, // Use only the space needed for children
+      itemCount: _sitUpLog.keys.length,
+      itemBuilder: (context, index) {
+        String date = _sitUpLog.keys.elementAt(index);
+        return ListTile(
+          title: Text(date),
+          trailing: Text('${_sitUpLog[date]} sit-ups'),
+        );
+      },
     );
   }
 
@@ -132,6 +176,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Add more space between the "Well done!" text and the counter if needed
                 if (shouldShowCongrats()) const SizedBox(height: 20),
                 // The rest of your widgets...
+                Expanded(
+                    child:
+                        sitUpLogWidget()), // Make sure it takes the needed space
               ],
             ),
           ),
