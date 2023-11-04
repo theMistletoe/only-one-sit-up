@@ -45,6 +45,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isUserUp = false;
   bool _isInitialPosition = true;
 
+  bool shouldShowCongrats() {
+    return _sitUpCount >= 1;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +117,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: Theme.of(context).textTheme.headline4,
                 ),
                 const SizedBox(height: 20),
-                // Text('Accelerometer: ${_accelerometerValues?.map((double v) => v.toStringAsFixed(1)).join(', ')}'),
+                // Use the shouldShowCongrats function to determine visibility of the "Well done!" text
+                Visibility(
+                  visible: shouldShowCongrats(),
+                  child: const Text(
+                    'Well done!',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green, // Choose a color that stands out
+                    ),
+                  ),
+                ),
+                // Add more space between the "Well done!" text and the counter if needed
+                if (shouldShowCongrats()) const SizedBox(height: 20),
+                // The rest of your widgets...
               ],
             ),
           ),
@@ -121,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _confettiController,
-              blastDirection: -pi / 2, // bottom to top
+              blastDirection: pi / 2, // bottom to top
               maxBlastForce: 5, // set a maximum blast force
               minBlastForce: 2, // set a minimum blast force
               numberOfParticles: 50, // number of particles to emit
