@@ -40,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Variables for counting sit-ups
   int _sitUpCount = 0;
   bool _isUserUp = false;
+  bool _isInitialPosition = true;
   final double _sitUpThreshold = 9.81 / 2; // Adjust the threshold accordingly
 
   @override
@@ -85,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _accelerometerValues = <double>[event.x, event.y, event.z];
 
             // Check if the device has been tilted enough to count as a sit-up
-            if (event.y > 9.0 && !_isUserUp) {
+            if (event.y > 9.0 && !_isUserUp && !_isInitialPosition) {
               _isUserUp = true;
               _sitUpCount++;
               // Check if the device can vibrate and provide haptic feedback
@@ -95,9 +96,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       duration: 10); // Vibrate for 100 milliseconds
                 }
               });
-            } else if (event.y < 1.0 && event.z < 0.0 && _isUserUp) {
+            } else if (event.y < 1.0 &&
+                event.z < 0.0 &&
+                (_isUserUp || _isInitialPosition)) {
               // This condition checks if the user has returned to the initial position
               _isUserUp = false;
+              _isInitialPosition = false;
             }
           });
         },
