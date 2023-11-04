@@ -59,8 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             const SizedBox(height: 20),
-            Text(
-                'Accelerometer: ${_accelerometerValues?.map((v) => v.toStringAsFixed(1)).join(', ')}'),
+            // Text('Accelerometer: ${_accelerometerValues?.map((v) => v.toStringAsFixed(1)).join(', ')}'),
           ],
         ),
       ),
