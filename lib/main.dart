@@ -130,15 +130,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget sitUpLogWidget() {
-    return ListView.builder(
+    return ListView.separated(
       shrinkWrap: true,
       itemCount: _sitUpLog.keys.length,
+      separatorBuilder: (context, index) => Divider(
+          color: Colors.grey[
+              300]), // Adds a divider between list items for better readability
       itemBuilder: (BuildContext ctx, int index) {
-        // Renamed context to ctx to avoid shadowing
         String date = _sitUpLog.keys.elementAt(index);
         return ListTile(
-          title: Text(date),
-          trailing: Text('${_sitUpLog[date]} sit-ups'),
+          contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16.0, vertical: 8.0), // Padding inside each list tile
+          title: Text(date,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w500)), // Bolder text for the date
+          trailing: Text(
+            '${_sitUpLog[date]} sit-ups',
+            style: const TextStyle(
+                color: Colors.blueAccent), // Accent color for the sit-up count
+          ),
         );
       },
     );
@@ -146,56 +156,75 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        elevation: 4,
-      ),
-      body: Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Sit-ups: $_sitUpCount',
-                  style: Theme.of(context).textTheme.headlineMedium,
+    // Added ThemeData for consistent styling throughout the app
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+          // Gives a bit of shadow to the AppBar for a subtle depth effect
+          elevation: 4.0,
+          centerTitle: true, // Centers the title on the AppBar
+          backgroundColor:
+              Colors.blueAccent, // A more vibrant color for the AppBar
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(
+              8.0), // Padding around the body content for better spacing
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirection:
+                      pi / 2, // pi/2 radians is 90 degrees, pointing downwards
+                  maxBlastForce: 5,
+                  minBlastForce: 2,
+                  numberOfParticles: 50,
+                  gravity: 1,
                 ),
-                Text(
-                  'Total Days: ${getTotalDays()}',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                Text(
-                  'Total Sit-Ups: ${getTotalSitUps()}',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 20),
-                if (_sitUpCount >= 1)
-                  const Text(
+              ),
+              const SizedBox(
+                  height: 20), // Spacing at the top for breathing room
+              Text(
+                'Sit-ups: $_sitUpCount',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors
+                        .blueAccent), // Larger text with accent color for the count
+              ),
+              Text(
+                'Total Days: ${getTotalDays()}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight
+                        .w600), // Subtle and less bold for secondary info
+              ),
+              Text(
+                'Total Sit-Ups: ${getTotalSitUps()}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight
+                        .w600), // Consistent styling with the above text
+              ),
+              const SizedBox(height: 20), // More spacing for a cleaner look
+              if (_sitUpCount > 0)
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: 8.0), // Padding around the "Well done!" text
+                  child: Text(
                     'Well done!',
                     style: TextStyle(
-                      fontSize: 36,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),
                   ),
-                if (_sitUpCount >= 1) const SizedBox(height: 20),
-                Expanded(child: sitUpLogWidget()),
-              ],
-            ),
+                ),
+              Expanded(
+                child: sitUpLogWidget(), // The list of sit-up counts per day
+              ),
+            ],
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirection: pi / 2,
-              maxBlastForce: 5,
-              minBlastForce: 2,
-              numberOfParticles: 50,
-              gravity: 1,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
