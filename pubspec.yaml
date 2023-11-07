@@ -33,7 +33,9 @@ dependencies:
   sensors_plus: ^3.1.0
   vibration: ^1.7.3
   confetti: ^0.7.0
-  shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
+  path_provider: ^2.1.1
+  path: ^1.8.3
 
 
   # The following adds the Cupertino Icons font to your application.
