@@ -47,6 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isInitialPosition = true;
   Map<String, int> _sitUpLog = {};
 
+  int getTotalDays() {
+    return _sitUpLog.keys.length;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -152,6 +156,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 Text(
                   'Sit-ups: $_sitUpCount',
                   style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                Text(
+                  'Total Days: ${getTotalDays()}',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 20),
                 if (_sitUpCount >= 1)
