@@ -95,8 +95,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void loadSitUpLog() async {
     final allRows = await DatabaseHelper.instance.queryAllRows();
+    final sortedEntries = allRows.map((row) {
+      // Explicitly cast the types of the map entries
+      return MapEntry<String, int>(row['date'] as String, row['count'] as int);
+    }).toList();
+
+    // Sort the entries in descending order of date
+    sortedEntries.sort((a, b) => b.key.compareTo(a.key));
+
     setState(() {
-      _sitUpLog = {for (var row in allRows) row['date']: row['count']};
+      _sitUpLog = Map<String, int>.fromEntries(sortedEntries);
     });
   }
 
@@ -226,6 +234,6 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database db = await instance.database;
-    return await db.query(table);
+    return await db.query(table, orderBy: "$columnDate DESC");
   }
 }
