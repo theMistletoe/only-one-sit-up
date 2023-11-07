@@ -51,6 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return _sitUpLog.keys.length;
   }
 
+  int getTotalSitUps() {
+    return _sitUpLog.values.fold(0, (sum, element) => sum + element);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -159,6 +163,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Text(
                   'Total Days: ${getTotalDays()}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                Text(
+                  'Total Sit-Ups: ${getTotalSitUps()}',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: 20),
