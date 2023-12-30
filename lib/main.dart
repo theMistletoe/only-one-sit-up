@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text("1日一回だけ、胸にスマホを置いて腹筋しましょう!"),
+                const Text("1日一回だけ、胸にスマホを置いて腹筋しよう!"),
                 const Text("1日一回だけだから、絶対に続けられる!"),
                 // Example text, add your instructions here
                 Image.asset(
