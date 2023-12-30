@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 import 'package:confetti/confetti.dart';
 import 'package:sqflite/sqflite.dart';
@@ -47,6 +48,45 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isInitialPosition = true;
   Map<String, int> _sitUpLog = {};
 
+  Future<bool> isFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+    if (isFirstLaunch) {
+      await prefs.setBool('isFirstLaunch', false);
+    }
+    return isFirstLaunch;
+  }
+
+  void showIntroductionModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("このアプリの使い方"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text("1日一回だけ、胸にスマホを置いて腹筋しましょう!"),
+                // Example text, add your instructions here
+                Image.asset(
+                    'assets/instruction_image.png'), // Example image, replace with your asset
+                // You can add more text or images
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   int getTotalDays() {
     return _sitUpLog.keys.length;
   }
@@ -58,6 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    isFirstLaunch().then((isFirst) {
+      if (isFirst) {
+        print("First launch");
+        print(isFirst);
+        // Call function to show modal
+        showIntroductionModal();
+      }
+    });
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 1));
     loadSitUpLog();
