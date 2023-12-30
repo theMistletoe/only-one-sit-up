@@ -204,6 +204,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get today's date and check if there are any sit-ups recorded for today
+    final today = getTodayDate();
+    final todaySitUps = _sitUpLog[today] ?? 0;
+
     // Added ThemeData for consistent styling throughout the app
     return MaterialApp(
       home: Scaffold(
@@ -221,6 +225,27 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              if (todaySitUps == 0)
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Let's do one sit-up!",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              if (_sitUpCount > 0)
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: 8.0), // Padding around the "Well done!" text
+                  child: Text(
+                    'Well done!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
               Align(
                 alignment: Alignment.topCenter,
                 child: ConfettiWidget(
@@ -241,35 +266,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Colors
                         .blueAccent), // Larger text with accent color for the count
               ),
-              Text(
-                'Total Days: ${getTotalDays()}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight
-                        .w600), // Subtle and less bold for secondary info
-              ),
-              Text(
-                'Total Sit-Ups: ${getTotalSitUps()}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight
-                        .w600), // Consistent styling with the above text
-              ),
-              const SizedBox(height: 20), // More spacing for a cleaner look
-              if (_sitUpCount > 0)
-                const Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 8.0), // Padding around the "Well done!" text
-                  child: Text(
-                    'Well done!',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
+              if (todaySitUps != 0)
+                Text(
+                  'Total Days: ${getTotalDays()}',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight
+                          .w600), // Subtle and less bold for secondary info
                 ),
-              Expanded(
-                child: sitUpLogWidget(), // The list of sit-up counts per day
-              ),
+              if (todaySitUps != 0)
+                Text(
+                  'Total Sit-Ups: ${getTotalSitUps()}',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight
+                          .w600), // Consistent styling with the above text
+                ),
+              if (todaySitUps != 0)
+                const SizedBox(height: 20), // More spacing for a cleaner look
+              if (todaySitUps != 0)
+                Expanded(
+                  child: sitUpLogWidget(), // The list of sit-up counts per day
+                ),
             ],
           ),
         ),
