@@ -67,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: ListBody(
               children: <Widget>[
                 const Text("1日一回だけ、胸にスマホを置いて腹筋しましょう!"),
+                const Text("1日一回だけだから、絶対に続けられる!"),
                 // Example text, add your instructions here
                 Image.asset(
                     'assets/instruction_image.png'), // Example image, replace with your asset
