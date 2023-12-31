@@ -101,8 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     isFirstLaunch().then((isFirst) {
       if (isFirst) {
-        print("First launch");
-        print(isFirst);
         // Call function to show modal
         showIntroductionModal();
       }
