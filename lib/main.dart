@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
@@ -153,11 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void loadSitUpLog() async {
     final allRows = await DatabaseHelper.instance.queryAllRows();
     final sortedEntries = allRows.map((row) {
-      // Explicitly cast the types of the map entries
       return MapEntry<String, int>(row['date'] as String, row['count'] as int);
     }).toList();
 
-    // Sort the entries in descending order of date
     sortedEntries.sort((a, b) => b.key.compareTo(a.key));
 
     setState(() {
@@ -168,12 +167,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void handleMenuSelection(String choice) async {
     switch (choice) {
       case 'Export to CSV':
-        print('Exporting to CSV');
         // Call your method to export data
         await exportSitUpLog();
         break;
       case 'Import from CSV':
         // Call your method to import data
+        await selectAndImportCsv();
         break;
       default:
         break;
@@ -205,6 +204,41 @@ class _MyHomePageState extends State<MyHomePage> {
       await _saveAndOpenFileAndroid(csv, fileName);
     } else if (Platform.isIOS) {
       await _saveAndShareFileIOS(csv, fileName);
+    }
+  }
+
+  Future<void> importFromCsv(File file) async {
+    final input = await file.readAsString();
+    List<List<dynamic>> rows = const CsvToListConverter().convert(input);
+
+    // Assuming the first row is headers
+    rows.removeAt(0);
+
+    // Delete all existing data
+    await DatabaseHelper.instance.deleteAllRows();
+
+    for (var row in rows) {
+      // Assuming the first column is date and the second is count
+      String date = row[0];
+      int count = row[1];
+      await DatabaseHelper.instance.insert(date, count);
+    }
+
+    // Reload your UI or data
+  }
+
+  Future<void> selectAndImportCsv() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['csv'],
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      await importFromCsv(file);
+
+      // Reload the data and update UI
+      loadSitUpLog();
     }
   }
 
@@ -414,6 +448,11 @@ class DatabaseHelper {
       {columnDate: date, columnCount: count},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> deleteAllRows() async {
+    Database db = await instance.database;
+    await db.delete(table);
   }
 
   Future<List<Map<String, dynamic>>> queryAllRows() async {
