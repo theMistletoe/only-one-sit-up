@@ -322,118 +322,120 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(
-              8.0), // Padding around the body content for better spacing
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              final today = getTodayDate();
-              final todaySitUps = _sitUpLog[today] ?? 0;
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(
+                8.0), // Padding around the body content for better spacing
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                final today = getTodayDate();
+                final todaySitUps = _sitUpLog[today] ?? 0;
 
-              return todaySitUps == 0
-                  ? Center(
-                      // Content for no sit-ups done today
-                      // Content for when no sit-ups have been done today
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              "Let's do one sit-up!",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(
-                            'Sit-ups: $todaySitUps',
-                            style: const TextStyle(
-                                fontSize: 32, color: Colors.blueAccent),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Column(
-                      // Regular content
-                      children: <Widget>[
-                        if (todaySitUps == 0)
-                          const Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              "Let's do one sit-up!",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        if (_sitUpCount > 0)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical:
-                                    8.0), // Padding around the "Well done!" text
-                            child: Text(
-                              'Well done!',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                return todaySitUps == 0
+                    ? Center(
+                        // Content for no sit-ups done today
+                        // Content for when no sit-ups have been done today
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                "Let's do one sit-up!",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: ConfettiWidget(
-                            confettiController: _confettiController,
-                            blastDirection: pi /
-                                2, // pi/2 radians is 90 degrees, pointing downwards
-                            maxBlastForce: 5,
-                            minBlastForce: 2,
-                            numberOfParticles: 50,
-                            gravity: 1,
-                          ),
+                            Text(
+                              'Sit-ups: $todaySitUps',
+                              style: const TextStyle(
+                                  fontSize: 32, color: Colors.blueAccent),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                            height:
-                                20), // Spacing at the top for breathing room
-                        Text(
-                          'Sit-ups: $_sitUpCount',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                  color: Colors
-                                      .blueAccent), // Larger text with accent color for the count
-                        ),
-                        if (todaySitUps != 0)
-                          Text(
-                            'Total Days: ${getTotalDays()}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                    fontWeight: FontWeight
-                                        .w600), // Subtle and less bold for secondary info
+                      )
+                    : Column(
+                        // Regular content
+                        children: <Widget>[
+                          if (todaySitUps == 0)
+                            const Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                "Let's do one sit-up!",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          if (_sitUpCount > 0)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      8.0), // Padding around the "Well done!" text
+                              child: Text(
+                                'Well done!',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: ConfettiWidget(
+                              confettiController: _confettiController,
+                              blastDirection: pi /
+                                  2, // pi/2 radians is 90 degrees, pointing downwards
+                              maxBlastForce: 5,
+                              minBlastForce: 2,
+                              numberOfParticles: 50,
+                              gravity: 1,
+                            ),
                           ),
-                        if (todaySitUps != 0)
-                          Text(
-                            'Total Sit-Ups: ${getTotalSitUps()}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                    fontWeight: FontWeight
-                                        .w600), // Consistent styling with the above text
-                          ),
-                        if (todaySitUps != 0)
                           const SizedBox(
-                              height: 20), // More spacing for a cleaner look
-                        if (todaySitUps != 0)
-                          Expanded(
-                            child:
-                                sitUpLogWidget(), // The list of sit-up counts per day
+                              height:
+                                  20), // Spacing at the top for breathing room
+                          Text(
+                            'Sit-ups: $_sitUpCount',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                                    color: Colors
+                                        .blueAccent), // Larger text with accent color for the count
                           ),
-                      ],
-                    );
-            },
+                          if (todaySitUps != 0)
+                            Text(
+                              'Total Days: ${getTotalDays()}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                      fontWeight: FontWeight
+                                          .w600), // Subtle and less bold for secondary info
+                            ),
+                          if (todaySitUps != 0)
+                            Text(
+                              'Total Sit-Ups: ${getTotalSitUps()}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                      fontWeight: FontWeight
+                                          .w600), // Consistent styling with the above text
+                            ),
+                          if (todaySitUps != 0)
+                            const SizedBox(
+                                height: 20), // More spacing for a cleaner look
+                          if (todaySitUps != 0)
+                            Expanded(
+                              child:
+                                  sitUpLogWidget(), // The list of sit-up counts per day
+                            ),
+                        ],
+                      );
+              },
+            ),
           ),
         ),
       ),
