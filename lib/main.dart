@@ -223,8 +223,6 @@ class _MyHomePageState extends State<MyHomePage> {
       int count = row[1];
       await DatabaseHelper.instance.insert(date, count);
     }
-
-    // Reload your UI or data
   }
 
   Future<void> selectAndImportCsv() async {
@@ -275,24 +273,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget sitUpLogWidget() {
+    List<String> sortedKeys = _sitUpLog.keys.toList()
+      ..sort((a, b) => b.compareTo(a)); // Sort in descending order of date
+
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: _sitUpLog.keys.length,
-      separatorBuilder: (context, index) => Divider(
-          color: Colors.grey[
-              300]), // Adds a divider between list items for better readability
+      itemCount: sortedKeys.length,
+      separatorBuilder: (context, index) => Divider(color: Colors.grey[300]),
       itemBuilder: (BuildContext ctx, int index) {
-        String date = _sitUpLog.keys.elementAt(index);
+        String date = sortedKeys[index];
         return ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16.0, vertical: 8.0), // Padding inside each list tile
-          title: Text(date,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w500)), // Bolder text for the date
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          title:
+              Text(date, style: const TextStyle(fontWeight: FontWeight.w500)),
           trailing: Text(
             '${_sitUpLog[date]} sit-ups',
-            style: const TextStyle(
-                color: Colors.blueAccent), // Accent color for the sit-up count
+            style: const TextStyle(color: Colors.blueAccent),
           ),
         );
       },
