@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 import 'package:confetti/confetti.dart';
@@ -163,6 +165,62 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void handleMenuSelection(String choice) async {
+    switch (choice) {
+      case 'Export to CSV':
+        print('Exporting to CSV');
+        // Call your method to export data
+        await exportSitUpLog();
+        break;
+      case 'Import from CSV':
+        // Call your method to import data
+        break;
+      default:
+        break;
+    }
+  }
+
+  Future<void> exportSitUpLog() async {
+    List<List<dynamic>> rows = [
+      ['Date', 'Sit-Up Count']
+    ];
+    // Fetch data from database
+    List<Map<String, dynamic>> dbData =
+        await DatabaseHelper.instance.queryAllRows();
+    for (var row in dbData) {
+      List<dynamic> rowList = [row['date'], row['count']];
+      rows.add(rowList);
+    }
+
+    String csv = const ListToCsvConverter().convert(rows);
+    String fileName = "mySitUpData.csv";
+
+    if (Platform.isAndroid) {
+      await _saveAndOpenFileAndroid(csv, fileName);
+    } else if (Platform.isIOS) {
+      await _saveAndShareFileIOS(csv, fileName);
+    }
+  }
+
+  Future<void> _saveAndOpenFileAndroid(String csv, String fileName) async {
+    final path = await _localPath;
+    final file = File('$path/Download/$fileName');
+    await file.writeAsString(csv);
+    // TODO: Notify user of success and file location
+  }
+
+  Future<void> _saveAndShareFileIOS(String csv, String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/$fileName');
+    await file.writeAsString(csv);
+    Share.shareXFiles([XFile(file.path)], text: 'Your sit-up data');
+  }
+
+  Future<String?> get _localPath async {
+    final directory = await getExternalStorageDirectory();
+    return directory?.path;
+  }
+
   void saveSitUpCount() async {
     final today = getTodayDate();
     final count = (_sitUpLog[today] ?? 0) + 1;
@@ -212,11 +270,23 @@ class _MyHomePageState extends State<MyHomePage> {
       home: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          // Gives a bit of shadow to the AppBar for a subtle depth effect
           elevation: 4.0,
-          centerTitle: true, // Centers the title on the AppBar
-          backgroundColor:
-              Colors.blueAccent, // A more vibrant color for the AppBar
+          centerTitle: true,
+          backgroundColor: Colors.blueAccent,
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: handleMenuSelection,
+              itemBuilder: (BuildContext context) {
+                return {'Export to CSV', 'Import from CSV'}
+                    .map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(
