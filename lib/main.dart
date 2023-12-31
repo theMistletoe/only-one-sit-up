@@ -180,6 +180,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  String getFormattedDateTime() {
+    var now = DateTime.now();
+    return "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}";
+  }
+
   Future<void> exportSitUpLog() async {
     List<List<dynamic>> rows = [
       ['Date', 'Sit-Up Count']
@@ -193,7 +198,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     String csv = const ListToCsvConverter().convert(rows);
-    String fileName = "mySitUpData.csv";
+    String formattedDateTime = getFormattedDateTime();
+    String fileName = "mySitUpData_$formattedDateTime.csv";
 
     if (Platform.isAndroid) {
       await _saveAndOpenFileAndroid(csv, fileName);
