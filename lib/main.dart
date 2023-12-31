@@ -302,25 +302,22 @@ class _MyHomePageState extends State<MyHomePage> {
     // Added ThemeData for consistent styling throughout the app
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          elevation: 4.0,
-          centerTitle: true,
-          backgroundColor: Colors.blueAccent,
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              onSelected: handleMenuSelection,
-              itemBuilder: (BuildContext context) {
-                return {'Export to CSV', 'Import from CSV'}
-                    .map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
+        floatingActionButton: FloatingActionButton(
+          onPressed:
+              () {}, // This needs to be specified, but we'll handle menu opening differently
+          child: PopupMenuButton<String>(
+            onSelected: handleMenuSelection,
+            itemBuilder: (BuildContext context) {
+              return {'Export to CSV', 'Import from CSV'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            icon: const Icon(Icons.menu),
+            tooltip: 'Menu',
+          ),
         ),
         body: SafeArea(
           child: Padding(
