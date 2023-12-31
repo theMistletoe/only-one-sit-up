@@ -299,10 +299,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get today's date and check if there are any sit-ups recorded for today
-    // final today = getTodayDate();
-    // final todaySitUps = _sitUpLog[today] ?? 0;
-
     // Added ThemeData for consistent styling throughout the app
     return MaterialApp(
       home: Scaffold(
