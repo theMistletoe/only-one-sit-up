@@ -5,8 +5,10 @@ import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:pushupone/i18n/strings.g.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +22,9 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(const MyApp());
+  LocaleSettings.useDeviceLocale(); // and this
+  runApp(TranslationProvider(
+      child: const MyApp())); // Wrap your app with TranslationProvider
 }
 
 class MyApp extends StatelessWidget {
@@ -65,12 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("このアプリの使い方"),
+          title: Text(t.tutorial_title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text("1日一回だけ、胸にスマホを置いて腹筋しよう!"),
-                const Text("1日一回だけだから、絶対に続けられる!"),
+                Text(t.tutorial_message1),
+                Text(t.tutorial_message2),
                 // Example text, add your instructions here
                 Image.asset(
                     'assets/instruction_image.png'), // Example image, replace with your asset
@@ -80,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text(t.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -289,7 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title:
               Text(date, style: const TextStyle(fontWeight: FontWeight.w500)),
           trailing: Text(
-            '${_sitUpLog[date]} sit-ups',
+            '${_sitUpLog[date]} ${t.situp_count_unit}',
             style: const TextStyle(color: Colors.blueAccent),
           ),
         );
@@ -301,6 +305,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Added ThemeData for consistent styling throughout the app
     return MaterialApp(
+      locale: TranslationProvider.of(context).flutterLocale, // use provider
+      supportedLocales: AppLocaleUtils.supportedLocales,
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed:
@@ -335,16 +342,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            const Padding(
-                              padding: EdgeInsets.all(10),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
                               child: Text(
-                                "Let's do one sit-up!",
-                                style: TextStyle(
+                                t.start_message,
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Text(
-                              'Sit-ups: $todaySitUps',
+                              "${t.situp_count}: $todaySitUps",
                               style: const TextStyle(
                                   fontSize: 32, color: Colors.blueAccent),
                             ),
@@ -354,29 +361,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     : Column(
                         // Regular content
                         children: <Widget>[
-                          if (todaySitUps == 0)
-                            const Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                "Let's do one sit-up!",
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical:
+                                    8.0), // Padding around the "Well done!" text
+                            child: Text(
+                              t.complete_message,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
                               ),
                             ),
-                          if (_sitUpCount > 0)
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical:
-                                      8.0), // Padding around the "Well done!" text
-                              child: Text(
-                                'Well done!',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ),
+                          ),
                           Align(
                             alignment: Alignment.topCenter,
                             child: ConfettiWidget(
@@ -393,7 +390,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               height:
                                   20), // Spacing at the top for breathing room
                           Text(
-                            'Sit-ups: $_sitUpCount',
+                            "${t.situp_count}: $todaySitUps",
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium
@@ -401,34 +398,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                     color: Colors
                                         .blueAccent), // Larger text with accent color for the count
                           ),
-                          if (todaySitUps != 0)
-                            Text(
-                              'Total Days: ${getTotalDays()}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight
-                                          .w600), // Subtle and less bold for secondary info
-                            ),
-                          if (todaySitUps != 0)
-                            Text(
-                              'Total Sit-Ups: ${getTotalSitUps()}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                      fontWeight: FontWeight
-                                          .w600), // Consistent styling with the above text
-                            ),
-                          if (todaySitUps != 0)
-                            const SizedBox(
-                                height: 20), // More spacing for a cleaner look
-                          if (todaySitUps != 0)
-                            Expanded(
-                              child:
-                                  sitUpLogWidget(), // The list of sit-up counts per day
-                            ),
+                          Text(
+                            "${t.situp_count_days}: ${getTotalDays()}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .w600), // Subtle and less bold for secondary info
+                          ),
+                          Text(
+                            '${t.situp_count_total}: ${getTotalSitUps()}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .w600), // Consistent styling with the above text
+                          ),
+                          const SizedBox(
+                              height: 20), // More spacing for a cleaner look
+                          Expanded(
+                            child:
+                                sitUpLogWidget(), // The list of sit-up counts per day
+                          ),
                         ],
                       );
               },

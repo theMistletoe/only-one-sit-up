@@ -1,0 +1,12 @@
+{
+    "start_message": "Let's do \"just ONE\" sit-up!",
+    "situp_count": "Sit-up Count",
+    "complete_message": "You did it!",
+    "situp_count_days": "Total Continuous Days",
+    "situp_count_total": "Total Sit-ups Count",
+    "situp_count_unit": "sit-ups",
+    "tutorial_title": "How to use",
+    "tutorial_message1": "Just once a day, do sit-ups with your phone on your chest!",
+    "tutorial_message2": "It's only once a day, so you can definitely keep up!",
+    "close": "Close"
+}

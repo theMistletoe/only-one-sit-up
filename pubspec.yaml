@@ -40,6 +40,10 @@ dependencies:
   csv: ^5.1.1
   share_plus: ^7.2.1
   file_picker: ^6.1.1
+  slang: ^3.28.0
+  slang_flutter: ^3.28.0
+  flutter_localizations: # add this
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,0 +1,12 @@
+{
+    "start_message": "腹筋を\"1回だけ\"やろう!",
+    "situp_count": "腹筋した回数",
+    "complete_message": "腹筋してえらい!",
+    "situp_count_days": "腹筋した日数",
+    "situp_count_total": "腹筋したトータル回数",
+    "situp_count_unit": "回",
+    "tutorial_title": "このアプリの使い方",
+    "tutorial_message1": "1日1回だけ、胸にスマホを置いて腹筋しよう!",
+    "tutorial_message2": "1日1回だけだから、絶対に続けられる!",
+    "close": "閉じる"
+}
