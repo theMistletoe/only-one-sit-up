@@ -8,5 +8,9 @@
     "tutorial_title": "How to use",
     "tutorial_message1": "Just once a day, do sit-ups with your phone on your chest!",
     "tutorial_message2": "It's only once a day, so you can definitely keep up!",
-    "close": "Close"
+    "close": "Close",
+    "warning_title": "※Warning",
+    "warning_message": "Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?",
+    "yes": "Yes",
+    "no": "No"
 }

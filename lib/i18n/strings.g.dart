@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 20 (10 per locale)
+/// Strings: 28 (14 per locale)
 ///
-/// Built on 2023-12-31 at 12:31 UTC
+/// Built on 2024-01-05 at 07:26 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -158,6 +158,10 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	String get tutorial_message1 => 'Just once a day, do sit-ups with your phone on your chest!';
 	String get tutorial_message2 => 'It\'s only once a day, so you can definitely keep up!';
 	String get close => 'Close';
+	String get warning_title => '※Warning';
+	String get warning_message => 'Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?';
+	String get yes => 'Yes';
+	String get no => 'No';
 }
 
 // Path: <root>
@@ -194,6 +198,10 @@ class _StringsJa implements Translations {
 	@override String get tutorial_message1 => '1日1回だけ、胸にスマホを置いて腹筋しよう!';
 	@override String get tutorial_message2 => '1日1回だけだから、絶対に続けられる!';
 	@override String get close => '閉じる';
+	@override String get warning_title => '※注意';
+	@override String get warning_message => 'インポートすると、以前に記録されたデータはすべて削除され、インポートするデータによって上書きされます。よろしいですか？';
+	@override String get yes => 'はい';
+	@override String get no => 'いいえ';
 }
 
 /// Flat map(s) containing all translations.
@@ -212,6 +220,10 @@ extension on Translations {
 			case 'tutorial_message1': return 'Just once a day, do sit-ups with your phone on your chest!';
 			case 'tutorial_message2': return 'It\'s only once a day, so you can definitely keep up!';
 			case 'close': return 'Close';
+			case 'warning_title': return '※Warning';
+			case 'warning_message': return 'Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?';
+			case 'yes': return 'Yes';
+			case 'no': return 'No';
 			default: return null;
 		}
 	}
@@ -230,6 +242,10 @@ extension on _StringsJa {
 			case 'tutorial_message1': return '1日1回だけ、胸にスマホを置いて腹筋しよう!';
 			case 'tutorial_message2': return '1日1回だけだから、絶対に続けられる!';
 			case 'close': return '閉じる';
+			case 'warning_title': return '※注意';
+			case 'warning_message': return 'インポートすると、以前に記録されたデータはすべて削除され、インポートするデータによって上書きされます。よろしいですか？';
+			case 'yes': return 'はい';
+			case 'no': return 'いいえ';
 			default: return null;
 		}
 	}
