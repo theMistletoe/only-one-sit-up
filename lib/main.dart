@@ -229,7 +229,37 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<bool> showConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(t.warning_title),
+              content: Text(t.warning_message),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(t.no),
+                  onPressed: () =>
+                      Navigator.of(context).pop(false), // Returns false
+                ),
+                TextButton(
+                  child: Text(t.yes),
+                  onPressed: () =>
+                      Navigator.of(context).pop(true), // Returns true
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // In case the dialog is dismissed, return false by default
+  }
+
   Future<void> selectAndImportCsv() async {
+    bool confirm = await showConfirmationDialog(context);
+    if (!confirm) {
+      return; // User selected "No", so do nothing
+    }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv'],
