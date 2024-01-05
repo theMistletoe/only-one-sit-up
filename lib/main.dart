@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:pushupone/i18n/strings.g.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,6 +50,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
+  final ScreenshotController screenshotController = ScreenshotController();
   late ConfettiController _confettiController;
   int _sitUpCount = 0;
   bool _isUserUp = false;
@@ -178,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // Call your method to import data
         await selectAndImportCsv();
         break;
-      case 'Share on Social Media':
+      case 'Share':
         shareContent();
         break;
       default:
@@ -186,10 +188,18 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void shareContent() {
+  void shareContent() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = await screenshotController.captureAndSave(directory.path,
+        fileName: "screenshot.png");
+
     // Example message to share
-    String message = "I have completed $_sitUpCount sit-ups!";
-    Share.share(message);
+    String message =
+        t.share_message.replaceAll('{0}', getTotalSitUps().toString());
+
+    if (imagePath != null) {
+      Share.shareXFiles([XFile(imagePath)], text: message);
+    }
   }
 
   String getFormattedDateTime() {
@@ -348,130 +358,134 @@ class _MyHomePageState extends State<MyHomePage> {
       supportedLocales: AppLocaleUtils.supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed:
-              () {}, // This needs to be specified, but we'll handle menu opening differently
-          child: PopupMenuButton<String>(
-            onSelected: handleMenuSelection,
-            itemBuilder: (BuildContext context) {
-              return {
-                'Export to CSV',
-                'Import from CSV',
-                'Share on Social Media'
-              }.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-            icon: const Icon(Icons.menu),
-            tooltip: 'Menu',
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(
-                8.0), // Padding around the body content for better spacing
-            child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                final today = getTodayDate();
-                final todaySitUps = _sitUpLog[today] ?? 0;
-
-                return todaySitUps == 0
-                    ? Center(
-                        // Content for no sit-ups done today
-                        // Content for when no sit-ups have been done today
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                t.start_message,
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Text(
-                              "${t.situp_count}: $todaySitUps",
-                              style: const TextStyle(
-                                  fontSize: 32, color: Colors.blueAccent),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Column(
-                        // Regular content
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical:
-                                    8.0), // Padding around the "Well done!" text
-                            child: Text(
-                              t.complete_message,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: ConfettiWidget(
-                              confettiController: _confettiController,
-                              blastDirection: pi /
-                                  2, // pi/2 radians is 90 degrees, pointing downwards
-                              maxBlastForce: 5,
-                              minBlastForce: 2,
-                              numberOfParticles: 50,
-                              gravity: 1,
-                            ),
-                          ),
-                          const SizedBox(
-                              height:
-                                  20), // Spacing at the top for breathing room
-                          Text(
-                            "${t.situp_count}: $todaySitUps",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(
-                                    color: Colors
-                                        .blueAccent), // Larger text with accent color for the count
-                          ),
-                          Text(
-                            "${t.situp_count_days}: ${getTotalDays()}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                    fontWeight: FontWeight
-                                        .w600), // Subtle and less bold for secondary info
-                          ),
-                          Text(
-                            '${t.situp_count_total}: ${getTotalSitUps()}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                    fontWeight: FontWeight
-                                        .w600), // Consistent styling with the above text
-                          ),
-                          const SizedBox(
-                              height: 20), // More spacing for a cleaner look
-                          Expanded(
-                            child:
-                                sitUpLogWidget(), // The list of sit-up counts per day
-                          ),
-                        ],
-                      );
+          floatingActionButton: FloatingActionButton(
+            onPressed:
+                () {}, // This needs to be specified, but we'll handle menu opening differently
+            child: PopupMenuButton<String>(
+              onSelected: handleMenuSelection,
+              itemBuilder: (BuildContext context) {
+                return {
+                  'Share',
+                  'Export to CSV',
+                  'Import from CSV',
+                }.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
               },
+              icon: const Icon(Icons.menu),
+              tooltip: 'Menu',
             ),
           ),
-        ),
-      ),
+          body: Screenshot(
+            controller: screenshotController,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(
+                    8.0), // Padding around the body content for better spacing
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    final today = getTodayDate();
+                    final todaySitUps = _sitUpLog[today] ?? 0;
+
+                    return todaySitUps == 0
+                        ? Center(
+                            // Content for no sit-ups done today
+                            // Content for when no sit-ups have been done today
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    t.start_message,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Text(
+                                  "${t.situp_count}: $todaySitUps",
+                                  style: const TextStyle(
+                                      fontSize: 32, color: Colors.blueAccent),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            // Regular content
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical:
+                                        8.0), // Padding around the "Well done!" text
+                                child: Text(
+                                  t.complete_message,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: ConfettiWidget(
+                                  confettiController: _confettiController,
+                                  blastDirection: pi /
+                                      2, // pi/2 radians is 90 degrees, pointing downwards
+                                  maxBlastForce: 5,
+                                  minBlastForce: 2,
+                                  numberOfParticles: 50,
+                                  gravity: 1,
+                                ),
+                              ),
+                              const SizedBox(
+                                  height:
+                                      20), // Spacing at the top for breathing room
+                              Text(
+                                "${t.situp_count}: $todaySitUps",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                        color: Colors
+                                            .blueAccent), // Larger text with accent color for the count
+                              ),
+                              Text(
+                                "${t.situp_count_days}: ${getTotalDays()}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                        fontWeight: FontWeight
+                                            .w600), // Subtle and less bold for secondary info
+                              ),
+                              Text(
+                                '${t.situp_count_total}: ${getTotalSitUps()}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                        fontWeight: FontWeight
+                                            .w600), // Consistent styling with the above text
+                              ),
+                              const SizedBox(
+                                  height:
+                                      20), // More spacing for a cleaner look
+                              Expanded(
+                                child:
+                                    sitUpLogWidget(), // The list of sit-up counts per day
+                              ),
+                            ],
+                          );
+                  },
+                ),
+              ),
+            ),
+          )),
     );
   }
 
