@@ -178,9 +178,18 @@ class _MyHomePageState extends State<MyHomePage> {
         // Call your method to import data
         await selectAndImportCsv();
         break;
+      case 'Share on Social Media':
+        shareContent();
+        break;
       default:
         break;
     }
+  }
+
+  void shareContent() {
+    // Example message to share
+    String message = "I have completed $_sitUpCount sit-ups!";
+    Share.share(message);
   }
 
   String getFormattedDateTime() {
@@ -345,7 +354,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: PopupMenuButton<String>(
             onSelected: handleMenuSelection,
             itemBuilder: (BuildContext context) {
-              return {'Export to CSV', 'Import from CSV'}.map((String choice) {
+              return {
+                'Export to CSV',
+                'Import from CSV',
+                'Share on Social Media'
+              }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
