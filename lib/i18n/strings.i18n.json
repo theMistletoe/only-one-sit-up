@@ -12,5 +12,6 @@
     "warning_title": "※Warning",
     "warning_message": "Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "share_message": "I've completed {0} sit-ups! Doing sit-ups, great!"
 }

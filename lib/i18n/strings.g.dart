@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 28 (14 per locale)
+/// Strings: 30 (15 per locale)
 ///
-/// Built on 2024-01-05 at 07:26 UTC
+/// Built on 2024-01-05 at 07:54 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -162,6 +162,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	String get warning_message => 'Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?';
 	String get yes => 'Yes';
 	String get no => 'No';
+	String get share_message => 'I\'ve completed {0} sit-ups! Doing sit-ups, great!';
 }
 
 // Path: <root>
@@ -202,6 +203,7 @@ class _StringsJa implements Translations {
 	@override String get warning_message => 'インポートすると、以前に記録されたデータはすべて削除され、インポートするデータによって上書きされます。よろしいですか？';
 	@override String get yes => 'はい';
 	@override String get no => 'いいえ';
+	@override String get share_message => '{0}回腹筋してえらい!';
 }
 
 /// Flat map(s) containing all translations.
@@ -224,6 +226,7 @@ extension on Translations {
 			case 'warning_message': return 'Upon import, all previously recorded data will be deleted and overwritten by the data being imported. Are you sure?';
 			case 'yes': return 'Yes';
 			case 'no': return 'No';
+			case 'share_message': return 'I\'ve completed {0} sit-ups! Doing sit-ups, great!';
 			default: return null;
 		}
 	}
@@ -246,6 +249,7 @@ extension on _StringsJa {
 			case 'warning_message': return 'インポートすると、以前に記録されたデータはすべて削除され、インポートするデータによって上書きされます。よろしいですか？';
 			case 'yes': return 'はい';
 			case 'no': return 'いいえ';
+			case 'share_message': return '{0}回腹筋してえらい!';
 			default: return null;
 		}
 	}
