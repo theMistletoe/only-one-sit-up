@@ -54,8 +54,6 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is required to set default language.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Your location is required to set default language.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Used for file output to export and import data for backup.</string>
 </dict>
