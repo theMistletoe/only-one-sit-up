@@ -195,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Example message to share
     String message =
-        t.share_message.replaceAll('{0}', getTotalSitUps().toString());
+        "${t.share_message.replaceAll('{0}', getTotalSitUps().toString())} #1日1腹筋 iOS:https://apps.apple.com/jp/app/1%E6%97%A51%E5%9B%9E%E3%81%A0%E3%81%91%E8%85%B9%E7%AD%8B%E3%81%99%E3%82%8B%E3%82%A2%E3%83%97%E3%83%AA/id6471345904";
 
     if (imagePath != null) {
       Share.shareXFiles([XFile(imagePath)], text: message);
