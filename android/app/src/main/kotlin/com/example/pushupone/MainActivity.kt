@@ -1,4 +1,4 @@
-package com.example.pushupone
+package jp.mistletoe.situpone
 
 import io.flutter.embedding.android.FlutterActivity
 
